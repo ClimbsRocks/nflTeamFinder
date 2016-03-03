@@ -1,30 +1,31 @@
 from flask import Flask, render_template, request, json
 import json
+from os import path
 
 
 app = Flask(__name__)
 
 # list of team twitter handles back in 2010, which more closely aligns with the training data
 # http://www.sportsgeekery.com/466/the-complete-list-of-official-nfl-team-twitter-accounts/
-with open('listOf2010TeamTwitterHandles.json') as handlesFileOld:    
+with open( path.join('wordLists', 'listOf2010TeamTwitterHandles.json') ) as handlesFileOld:    
     oldTeamHandles = json.load(handlesFileOld)['teams']
 
 # current list of nfl team twitter handles
 # https://twitter.com/NFL/lists/nfl-teams/members?lang=en
-with open('listOfCurrentNFLTwitterHandles.json') as handlesFile:    
+with open( path.join('wordLists', 'listOfCurrentNFLTwitterHandles.json') ) as handlesFile:    
     currentTeamHandles = json.load(handlesFile)['teams']
 
 # dict where team names are the keys and city names are the values
-with open('teamNames.json') as teamNamesFile:    
+with open( path.join('wordLists', 'teamNames.json') ) as teamNamesFile:    
     teamNames = json.load(teamNamesFile)
 
 # nicknames for each team from:
 # https://foreshock.wordpress.com/origin-of-nfl-teams-1922-present/nfl-team-nicknames-goodbadoldnew/
-with open('teamNicknames.json') as teamNicknames:    
+with open( path.join('wordLists', 'teamNicknames.json') ) as teamNicknames:    
     teamNicknames = json.load(teamNicknames)['nicknames']
 
 # list of footabll words taken from http://football.about.com/od/football101/a/Football-Glossary.htm
-with open('footballWords.json') as footballWordsFile:    
+with open( path.join('wordLists', 'footballWords.json') ) as footballWordsFile:    
     footballWords = json.load(footballWordsFile)['words']
 
 extendedFootballWords = footballWords + teamNames.values()
@@ -102,5 +103,5 @@ def submitMessage():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
     
