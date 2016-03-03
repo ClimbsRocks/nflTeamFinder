@@ -26,8 +26,32 @@ def index():
 
 @app.route('/submitMessage',methods=['POST','GET'])
 def submitMessage():
-    message = request.form['newMessage']
+    message = request.form['newMessage'].lower()
+    print message
 
+    # try to find any of the team twitter handles in the message
+    for handle in oldTeamHandles['teams'] + currentTeamHandles['teams']:
+        try:
+            message.index('@' + handle.lower())
+            return "Very likely"
+        except:
+            pass
+
+    # try to find each team name in the message
+    for team in teamNames:
+        try: 
+            message.index(team.lower())
+            try:
+                # if we find both the team name and the city in the message, we're very certain this is about an NFL team
+                message.index(teamNames[team].lower())
+                return "Very likely"
+            except:
+                # if we find only the team name but not the city, we are only slightly confident this is about an NFL team
+                return "Somewhat likely"
+        except:
+            pass
+
+    return "Unlikely"
 
 
 if __name__ == '__main__':
