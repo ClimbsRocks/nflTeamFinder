@@ -18,6 +18,11 @@ with open('listOfCurrentNFLTwitterHandles.json') as handlesFile:
 with open('teamNames.json') as teamNamesFile:    
     teamNames = json.load(teamNamesFile)
 
+# list of footabll words taken from http://football.about.com/od/football101/a/Football-Glossary.htm
+with open('footballWords.json') as footballWordsFile:    
+    footballWords = json.load(footballWordsFile)
+extendedFootballWords = footballWords['words'] + teamNames.values()
+
 
 @app.route('/')
 def index():
@@ -42,9 +47,14 @@ def submitMessage():
         try: 
             message.index(team.lower())
             try:
-                # if we find both the team name and the city in the message, we're very certain this is about an NFL team
-                message.index(teamNames[team].lower())
-                return "Very likely"
+                # if we find both the team name and a city that an NFL team plays in contained in the message, we're very certain this is about an NFL team
+                # similarly, if we find any of our "football words" in addition to a team name, this message is very likely to be about an NFL team
+                for word in extendedFootballWords:
+                    try:
+                        message.index(word.lower())
+                        return "Very likely"
+                    except:
+                        pass
             except:
                 # if we find only the team name but not the city, we are only slightly confident this is about an NFL team
                 return "Somewhat likely"
